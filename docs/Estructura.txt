@@ -1,0 +1,22 @@
+# Bit-Quest--Proyecto-Final-Ensamblador
+Repositorio destinado al desarrollo del proyecto final "Bit Quest" para la materia de Lenguaje Ensamblador
+
+A continuación se detalla la estructura preeliminar que buscaremos implementar en el proyecto
+
+BitQuest_Team/
+├── src/
+│   ├── main.c          # Menú y control general (Leo)
+│   ├── juego.c         # Viewport, movimiento, renderizado (Leo)
+│   └── rutinas.asm     # 5 funciones obligatorias NASM (Beto, Arthur)
+├── include/
+│   ├── juego.h         # Prototipos de C y NASM
+│   └── mapas.h         # Declaración de arreglos de mapa
+├── assets/
+│   ├── maps/           # Archivos nivel1.txt ... nivel4.txt (Aída)
+│   └── audio/          # Música y efectos de sonido (Aída)
+├── docs/
+│   └── reporte_final.pdf
+│ 
+├── build.bat           # Compilación Windows (Aída)
+├── build.sh            # Compilación Linux (Aída)
+└── README.md
