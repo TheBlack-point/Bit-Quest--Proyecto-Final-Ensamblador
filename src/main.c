@@ -75,7 +75,7 @@ void mostrar_menu_principal()
 }
 
 /* ─────────────────────────────────────────────
- * PANTALLA FINAL
+ * PANTALLA FINAL 
  * Llama a calcular_puntaje() — NASM funcion 3
  * ───────────────────────────────────────────── */
 void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_completados)
