@@ -60,12 +60,12 @@ Opciones adicionales:
 
 | Símbolo | Significado |
 |---------|-------------|
-| `║`     | Pared       | (Y variantes)
+| `█`     | Pared       | (Y variantes)
 | `░`     | Camino libre|
 | `X`     | Jugador     |
 | `©`     | Moneda      |
 | `¶`     | Llave       |
-| `Ð`     | Puerta      |
+| `│`     | Puerta      |
 | `█`    | Salida       |
 
 Referencia: https://elcodigoascii.com.ar/codigos-ascii-extendidos/bloque-negro-solido-caracter-grafico-codigo-ascii-219.html

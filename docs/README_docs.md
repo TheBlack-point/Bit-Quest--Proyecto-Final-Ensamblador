@@ -20,7 +20,7 @@ Responsable: Aída (reporte final en PDF)
 5. **Descripción general del juego**
 6. **Explicación de la representación del mapa**
    - Mencionar que internamente se usa ASCII (`#`, `.`, `P`, `M`, `K`, `D`, `E`)
-   - Explicar la función de traducción visual a Unicode (`║`, `░`, `X`, `©`, `¶`, `Ð`, `█`)
+   - Explicar la función de traducción visual a Unicode (`█`, `░`, `X`, `©`, `¶`, `│`, `█`)
 7. **Explicación del funcionamiento de la ventana visible de 20×20**
 8. **Explicación de las funciones implementadas en C**
 9. **Explicación detallada de las 5 funciones en NASM**

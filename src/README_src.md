@@ -41,12 +41,12 @@ interno en ASCII, nunca sobre los símbolos Unicode visuales.
 
 | Char interno | Significado  | Visual en pantalla |
 |--------------|--------------|--------------------|
-| `#`          | Pared        | `║` (y variantes)  |
+| `#`          | Pared        | `█` (y variantes)  |
 | `.`          | Camino libre | `░`                |
 | `P`          | Jugador      | `X`                |
 | `M`          | Moneda       | `©`                |
 | `K`          | Llave        | `¶`                |
-| `D`          | Puerta       | `Ð`                |
+| `D`          | Puerta       | `│`                |
 | `E`          | Salida       | `█`                |
 
 **Regla de oro:** Beto y Arthur comparan contra los chars ASCII (`#`, `M`, `K`, etc.),

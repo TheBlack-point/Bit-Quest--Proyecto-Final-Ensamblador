@@ -2,6 +2,8 @@
 REM Script para compilar el juego BitQuest en Windows usando NASM y GCC.
 REM Responsable: Aída la oztia Cons
 
+
+
 echo Ensamblando Rutinas...
 nasm -f win64 src\rutinas_win.asm -o src\rutinas.obj
 if errorlevel 1 (

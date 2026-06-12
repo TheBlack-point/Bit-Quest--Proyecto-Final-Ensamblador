@@ -29,12 +29,12 @@ Coordinación: Carlos (parser que los lee)
 
 | Char | Significado  | Se verá en pantalla como |
 |------|--------------|--------------------------|
-| `#`  | Pared        | `║` (y variantes)        |
+| `#`  | Pared        | `█`                      |
 | `.`  | Camino libre | `░`                      |
 | `P`  | Jugador      | `X`                      |
 | `M`  | Moneda       | `©`                      |
 | `K`  | Llave        | `¶`                      |
-| `D`  | Puerta       | `Ð`                      |
+| `D`  | Puerta       | `│`                      |
 | `E`  | Salida       | `█`                      |
 
 **Los archivos .txt usan los chars ASCII, NO los símbolos visuales.**
