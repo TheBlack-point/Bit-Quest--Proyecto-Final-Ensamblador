@@ -35,7 +35,7 @@ extern int validar_movimiento(char* mapa, int columnas, int nueva_fila,int nueva
 
 
 
-/*AREA DE CARLOS - persistencia*/
+/*AREA DE CARLOS - Persistencia*/
 
 
 /*Funciones -Leo -juego.c */
