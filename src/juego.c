@@ -61,8 +61,8 @@ char leer_tecla()
 
 void calcular_origen_viewport(int jugador_fila, int jugador_col, int *origen_fila, int *origen_col)
 {
-    *origen_fila = jugador_fila - (VISITA_FILAS / 2);
-    *origen_col = jugador_col - (VISITA_COLS / 2);
+    *origen_fila = jugador_fila - (VISTA_FILAS / 2);
+    *origen_col = jugador_col - (VISTA_COLS / 2);
     
     if (*origen_fila < 0) { *origen_fila = 0;}
     if (*origen_col < 0) { *origen_col = 0;}
@@ -86,7 +86,7 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
     int origen_fila, origen_col;
     calcular_origen_viewport(jugador_fila, jugador_col, &origen_fila, &origen_col);
 
-    print("\033[H\033[J"); //Este print limpia la pantalla
+    printf("\033[H\033[J"); //Este print limpia la pantalla
     printf(" BitQuest | Nivel: %d | Monedas: %d/%d | Pasos: %d\n", 
         estado.nivel_actual,
         estado.monedas_recogidas,
@@ -168,7 +168,7 @@ void mover_jugador(char tecla){
     if(celda == 'D' && estado.tiene_llave)//Si el jugador se mueve a una celda con puerta y tiene la llave
     {
         estado.puerta_abierta = 1; //El jugador ha abierto la puerta
-        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la puerta 
+        estado.mapa[nueva_fila][nueva_col] = ' '; //Remueve la puerta 
     }
 
 }
