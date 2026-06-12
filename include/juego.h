@@ -38,7 +38,7 @@ extern int validar_movimiento(char* mapa, int columnas, int nueva_fila,int nueva
 /*AREA DE CARLOS - persistencia*/
 
 
-/*Funciones -Leo -juego.c*/
+/*Funciones -Leo -juego.c */
 void ejecutar_juego();
 void inicializar_estado(int nivel);
 void renderizar_ventana_visible(int jugador_fila, int jugador_col);
