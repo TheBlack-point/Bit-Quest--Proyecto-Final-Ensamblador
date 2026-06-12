@@ -76,8 +76,6 @@ void calcular_origen_viewport(int jugador_fila, int jugador_col, int *origen_fil
     Esta area es de AIDA cuando 'traducir_simbolo() este listo
     remplazas el printf("%c") por:
     'printf("%s", traducir_simbolo(celda));'
-
-    Aida si estas viendo esto borra este comentario, ya son las 3:01 A.M.
 */
 
 
