@@ -116,3 +116,105 @@ validar_movimiento:
     mov rsp, rbp
     pop rbp
     ret
+
+bits 64
+default rel
+
+;===============================================================
+; rutinas_linux.asm
+; FUNCIONES NASM 64 BITS — BitQuest  (Linux System V ABI)
+;
+; Convencion System V AMD64:
+;   RDI = param 1,  RSI = param 2,  RDX = param 3,  RCX = param 4
+;   R8  = param 5
+;   RAX = retorno
+;===============================================================
+
+;===============================================================
+; Funcion: detectar_objeto
+; Detecta si un objeto especifico existe en una celda del mapa.
+;
+; Parametros desde C:
+;   RDI       = direccion base del mapa
+;   ESI       = numero de columnas
+;   EDX       = fila a revisar
+;   ECX       = columna a revisar
+;   R8B       = caracter objeto a buscar (char)
+;
+; Retorno:
+;   EAX = 1  objeto encontrado en la celda
+;   EAX = 0  objeto no encontrado
+;===============================================================
+
+global detectar_objeto
+
+section .text
+
+detectar_objeto:
+    push rbp
+    mov rbp, rsp
+
+    ; calcular indice = fila * columnas + columna
+    mov eax, edx
+    imul eax, esi
+    add eax, ecx
+
+    ; leer celda del mapa en ese indice
+    mov r10b, byte [rdi + rax]
+
+    ; comparar celda con el objeto buscado (R8B, ya en registro)
+    cmp r10b, r8b
+    je .objeto_encontrado
+
+    xor eax, eax
+    jmp .fin_detectar
+
+.objeto_encontrado:
+    mov eax, 1
+
+.fin_detectar:
+    mov rsp, rbp
+    pop rbp
+    ret
+
+;===============================================================
+; Funcion: contar_celdas_libres
+; Cuenta cuantas celdas libres (.) existen en el mapa.
+;
+; Parametros desde C:
+;   RDI = direccion base del mapa
+;   ESI = total de celdas (3600)
+;
+; Retorno:
+;   RAX = cantidad de celdas libres encontradas
+;===============================================================
+
+global contar_celdas_libres
+
+section .text
+
+contar_celdas_libres:
+    push rbp
+    mov rbp, rsp
+
+    xor rax, rax        ; contador = 0
+    xor ecx, ecx        ; indice = 0
+
+.bucle_inicio:
+    cmp ecx, esi        ; indice < total_celdas?
+    jge .bucle_fin
+
+    mov r10b, byte [rdi + rcx]  ; celda = mapa[indice]
+    cmp r10b, '.'               ; es camino libre?
+    jne .avanzar_indice
+
+    inc rax             ; contador++
+
+.avanzar_indice:
+    inc ecx             ; indice++
+    jmp .bucle_inicio
+
+.bucle_fin:
+    mov rsp, rbp
+    pop rbp
+    ret
