@@ -235,7 +235,3 @@ void ejecutar_juego() {
         restaurar_terminal();
     #endif
 }
-
-
-
-

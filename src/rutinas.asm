@@ -8,11 +8,13 @@ default rel
 ; contar_caracteres
 ; validar_movimiento
 ;
-; Convencion Windows x64:
-; RCX = parametro 1
-; RDX = parametro 2
-; R8  = parametro 3
-; R9  = parametro 4
+; Convencion Linux x64 / System V AMD64:
+; RDI = parametro 1
+; RSI = parametro 2
+; RDX = parametro 3
+; RCX = parametro 4
+; R8  = parametro 5
+; R9  = parametro 6
 ;===============
 
 global contar_caracteres
@@ -22,12 +24,11 @@ section .text
 
 ;FASE 1
 ; Funcion: contar_caracteres
-; Sirve para contar cuantas veces aparece un caracter dentro del mapa.
 ;
 ; Parametros desde C:
-; RCX = direccion base del mapa
-; EDX = total de celdas
-; R8B = caracter objetivo a contar
+; RDI = direccion base del mapa
+; RSI = total de celdas
+; DL  = caracter objetivo a contar
 ;
 ; Retorno:
 ; RAX = cantidad encontrada
@@ -36,21 +37,21 @@ contar_caracteres:
     push rbp
     mov rbp, rsp
 
-    xor rax, rax
-    xor r9d, r9d
+    xor rax, rax        ; contador = 0
+    xor r8, r8          ; indice = 0
 
 .bucle_inicio:
-    cmp r9d, edx
+    cmp r8, rsi
     jge .bucle_fin
 
-    mov r10b, byte [rcx + r9]
-    cmp r10b, r8b
+    mov r9b, byte [rdi + r8]
+    cmp r9b, dl
     jne .avanzar_indice
 
     inc rax
 
 .avanzar_indice:
-    inc r9d
+    inc r8
     jmp .bucle_inicio
 
 .bucle_fin:
@@ -61,14 +62,12 @@ contar_caracteres:
 
 ;FASE 2
 ; Funcion: validar_movimiento
-; Revisa si el jugador puede moverse a una celda.
-; Si la celda contiene '#', el movimiento se bloquea.
 ;
 ; Parametros desde C:
-; RCX = direccion base del mapa
-; EDX = numero de columnas
-; R8D = nueva fila
-; R9D = nueva columna
+; RDI = direccion base del mapa
+; RSI = numero de columnas
+; RDX = nueva fila
+; RCX = nueva columna
 ;
 ; Retorno:
 ; EAX = 1 movimiento valido
@@ -79,31 +78,31 @@ validar_movimiento:
     mov rbp, rsp
 
     ; validar fila negativa
-    cmp r8d, 0
+    cmp rdx, 0
     jl .mov_bloqueado
 
     ; validar columna negativa
-    cmp r9d, 0
+    cmp rcx, 0
     jl .mov_bloqueado
 
     ; validar limite de filas
-    cmp r8d, 60
+    cmp rdx, 60
     jge .mov_bloqueado
 
     ; validar limite de columnas
-    cmp r9d, edx
+    cmp rcx, rsi
     jge .mov_bloqueado
 
     ; indice = fila * columnas + columna
-    mov eax, r8d
-    imul eax, edx
-    add eax, r9d
+    mov r8, rdx
+    imul r8, rsi
+    add r8, rcx
 
     ; leer celda del mapa
-    mov r10b, byte [rcx + rax]
+    mov r9b, byte [rdi + r8]
 
     ; si es pared, bloquear
-    cmp r10b, '#'
+    cmp r9b, '#'
     je .mov_bloqueado
 
     ; si no es pared, permitir movimiento
