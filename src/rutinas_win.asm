@@ -3,52 +3,142 @@ default rel
 
 ;===============================================================
 ; rutinas_win.asm
-; FUNCIONES NASM 64 BITS — BitQuest  (Windows x64 ABI)
+; FUNCIONES NASM 64 BITS — BitQuest (Windows x64 ABI)
 ;
 ; Convencion Microsoft x64:
-;   RCX = param 1,  RDX = param 2,  R8 = param 3,  R9 = param 4
-;   5to param y siguientes en stack: [RSP+32], [RSP+40], ...
+;   RCX = param 1
+;   RDX = param 2
+;   R8  = param 3
+;   R9  = param 4
+;   5to parametro en stack
 ;   RAX = retorno
-;   Shadow space de 32 bytes reservado por el caller antes del call
 ;===============================================================
+
+global contar_caracteres
+global validar_movimiento
+global detectar_objeto
+global contar_celdas_libres
+
+section .text
+
+;===============================================================
+; Funcion: contar_caracteres
+;
+; RCX = direccion base del mapa
+; EDX = total de celdas
+; R8B = caracter objetivo a contar
+;
+; Retorno:
+; RAX = cantidad encontrada
+;===============================================================
+
+contar_caracteres:
+    push rbp
+    mov rbp, rsp
+
+    xor rax, rax
+    xor r9d, r9d
+
+.bucle_contar:
+    cmp r9d, edx
+    jge .fin_contar
+
+    mov r10b, byte [rcx + r9]
+    cmp r10b, r8b
+    jne .avanzar_contar
+
+    inc rax
+
+.avanzar_contar:
+    inc r9d
+    jmp .bucle_contar
+
+.fin_contar:
+    mov rsp, rbp
+    pop rbp
+    ret
+
+
+;===============================================================
+; Funcion: validar_movimiento
+;
+; RCX = direccion base del mapa
+; EDX = numero de columnas
+; R8D = nueva fila
+; R9D = nueva columna
+;
+; Retorno:
+; EAX = 1 movimiento valido
+; EAX = 0 movimiento bloqueado
+;===============================================================
+
+validar_movimiento:
+    push rbp
+    mov rbp, rsp
+
+    cmp r8d, 0
+    jl .mov_bloqueado
+
+    cmp r9d, 0
+    jl .mov_bloqueado
+
+    cmp r8d, 60
+    jge .mov_bloqueado
+
+    cmp r9d, edx
+    jge .mov_bloqueado
+
+    mov eax, r8d
+    imul eax, edx
+    add eax, r9d
+
+    mov r10b, byte [rcx + rax]
+
+    cmp r10b, '#'
+    je .mov_bloqueado
+
+    mov eax, 1
+    jmp .fin_validar
+
+.mov_bloqueado:
+    xor eax, eax
+
+.fin_validar:
+    mov rsp, rbp
+    pop rbp
+    ret
+
 
 ;===============================================================
 ; Funcion: detectar_objeto
-; Detecta si un objeto especifico existe en una celda del mapa.
 ;
-; Parametros desde C:
-;   RCX       = direccion base del mapa
-;   EDX       = numero de columnas
-;   R8D       = fila a revisar
-;   R9D       = columna a revisar
-;   [RSP+40]  = caracter objeto a buscar (char)
+; RCX       = direccion base del mapa
+; EDX       = numero de columnas
+; R8D       = fila a revisar
+; R9D       = columna a revisar
+; [RBP+48]  = caracter objeto a buscar
 ;
 ; Retorno:
-;   EAX = 1  objeto encontrado en la celda
-;   EAX = 0  objeto no encontrado
+; EAX = 1 objeto encontrado
+; EAX = 0 objeto no encontrado
 ;===============================================================
-
-global detectar_objeto
-
-section .text
 
 detectar_objeto:
     push rbp
     mov rbp, rsp
 
-    ; leer el 5to parametro desde el stack
-    ; +8 por el push rbp que desplazo RSP
-    movsx r10d, byte [rsp+40]
+    ; En Windows x64, despues de push rbp:
+    ; return address = [rbp+8]
+    ; shadow space   = [rbp+16] a [rbp+40]
+    ; 5to parametro  = [rbp+48]
+    mov r10b, byte [rbp+48]
 
-    ; calcular indice = fila * columnas + columna
     mov eax, r8d
     imul eax, edx
     add eax, r9d
 
-    ; leer celda del mapa en ese indice
     mov r11b, byte [rcx + rax]
 
-    ; comparar celda con el objeto buscado
     cmp r11b, r10b
     je .objeto_encontrado
 
@@ -63,44 +153,39 @@ detectar_objeto:
     pop rbp
     ret
 
+
 ;===============================================================
 ; Funcion: contar_celdas_libres
-; Cuenta cuantas celdas libres (.) existen en el mapa.
 ;
-; Parametros desde C:
-;   RCX = direccion base del mapa
-;   EDX = total de celdas (3600)
+; RCX = direccion base del mapa
+; EDX = total de celdas
 ;
 ; Retorno:
-;   RAX = cantidad de celdas libres encontradas
+; RAX = cantidad de celdas libres '.'
 ;===============================================================
-
-global contar_celdas_libres
-
-section .text
 
 contar_celdas_libres:
     push rbp
     mov rbp, rsp
 
-    xor rax, rax        ; contador = 0
-    xor r9d, r9d        ; indice = 0
+    xor rax, rax
+    xor r9d, r9d
 
-.bucle_inicio:
-    cmp r9d, edx        ; indice < total_celdas?
-    jge .bucle_fin
+.bucle_libres:
+    cmp r9d, edx
+    jge .fin_libres
 
-    mov r10b, byte [rcx + r9]   ; celda = mapa[indice]
-    cmp r10b, '.'               ; es camino libre?
-    jne .avanzar_indice
+    mov r10b, byte [rcx + r9]
+    cmp r10b, '.'
+    jne .avanzar_libres
 
-    inc rax             ; contador++
+    inc rax
 
-.avanzar_indice:
-    inc r9d             ; indice++
-    jmp .bucle_inicio
+.avanzar_libres:
+    inc r9d
+    jmp .bucle_libres
 
-.bucle_fin:
+.fin_libres:
     mov rsp, rbp
     pop rbp
     ret
