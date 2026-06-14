@@ -1,6 +1,31 @@
 #ifndef JUEGO_H
 #define JUEGO_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+
+/* CAMBIO DE LUGAR PARA DEFINIR LOS COLORES DE MANERA GLOBAL */
+/* Codigos de color ANSI DE LOS MENÚ */
+#define COLOR_RESET   "\033[0m"
+#define COLOR_CYAN    "\033[96m"
+#define COLOR_YELLOW  "\033[93m"
+#define COLOR_WHITE   "\033[97m"
+#define COLOR_GRAY    "\033[90m"
+
+/* COLORES PARA EL MAPA (AÍDA)*/
+#define COLOR_RESET   "\033[0m"   /* Reseteo de color */
+#define COLOR_PARED   "\033[90m"   /* gris oscuro  */
+#define COLOR_CAMINO  "\033[37m"   /* blanco suave */
+#define COLOR_JUGADOR "\033[96m"   /* cian brillante */
+#define COLOR_MONEDA  "\033[93m"   /* amarillo     */
+#define COLOR_LLAVE   "\033[95m"   /* magenta      */
+#define COLOR_PUERTA  "\033[91m"   /* rojo         */
+#define COLOR_SALIDA  "\033[92m"   /* verde        */
+
+
 /* Dimensiones del mapa */
 
 #define FILAS 60
@@ -43,5 +68,8 @@ void ejecutar_juego();
 void inicializar_estado(int nivel);
 void renderizar_ventana_visible(int jugador_fila, int jugador_col);
 void mover_jugador(char tecla);
+
+/*Funciones de audio AÍDA*/
+void reproducir_audio(const char* evento);
 
 #endif

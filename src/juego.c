@@ -70,13 +70,20 @@ void calcular_origen_viewport(int jugador_fila, int jugador_col, int *origen_fil
     if(*origen_col > COLS - VISTA_COLS) { *origen_col = COLS - VISTA_COLS;}
 }
 
+//FUNCIÓN DE TRADUCCIÓN DE SÍMBOLOS PARA LA IMPRESIÓN DEL MAPA -AÍDA
+const char* traducir_simbolo(char c) {
+    switch (c){
+        case '#': return COLOR_PARED   "█" COLOR_RESET;   
+        case '.': return COLOR_CAMINO  "░" COLOR_RESET;
+        case 'P': return COLOR_JUGADOR "X" COLOR_RESET;    
+        case 'M': return COLOR_MONEDA  "©" COLOR_RESET;    
+        case 'K': return COLOR_LLAVE   "¶" COLOR_RESET;      
+        case 'D': return COLOR_PUERTA  "Ð" COLOR_RESET;     
+        case 'E': return COLOR_SALIDA  "█" COLOR_RESET;     
+        default:  return COLOR_CAMINO  "?" COLOR_RESET;     
+    }
+}
 
-/*
-    Renderizado
-    Esta area es de AIDA cuando 'traducir_simbolo() este listo
-    remplazas el printf("%c") por:
-    'printf("%s", traducir_simbolo(celda));' 
-*/
 
 
 void renderizar_ventana_visible(int jugador_fila, int jugador_col)
@@ -104,7 +111,7 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
             char celda = (fila_real == jugador_fila && col_real == jugador_col)
             ? 'P' //Jugador
             : estado.mapa[fila_real][col_real]; //Nuesto bello mapa
-            printf("%c", celda);
+            printf("%s", traducir_simbolo(celda));
         }
         printf(" |\n");
     }
