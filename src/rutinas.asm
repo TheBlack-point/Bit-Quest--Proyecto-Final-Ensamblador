@@ -117,8 +117,6 @@ validar_movimiento:
     pop rbp
     ret
 
-bits 64
-default rel
 
 ;===============================================================
 ; rutinas_linux.asm
