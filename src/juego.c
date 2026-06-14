@@ -161,19 +161,19 @@ void mover_jugador(char tecla){
     if(celda == 'M') //Si el jugador se mueve a una celda con moneda
     {
         estado.monedas_recogidas++;//esto aumenta tus monedas
-        estado.mapa[nueva_fila][nueva_col] = ' '; //Remueve la moneda del mapa
+        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la moneda del mapa
     }
 
     if(celda == 'K') //Si el jugador se mueve a una celda con llave
     {
         estado.tiene_llave = 1; //El jugador ahora tiene la llave
-        estado.mapa[nueva_fila][nueva_col] = ' '; //Remueve la llave del mapa
+        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la llave del mapa
     }
 
     if(celda == 'D' && estado.tiene_llave)//Si el jugador se mueve a una celda con puerta y tiene la llave
     {
         estado.puerta_abierta = 1; //El jugador ha abierto la puerta
-        estado.mapa[nueva_fila][nueva_col] = ' '; //Remueve la puerta 
+        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la puerta 
     }
 
 }
@@ -230,9 +230,7 @@ void ejecutar_juego() {
             if (estado.mapa[estado.jugador_fila][estado.jugador_col] == 'E' && estado.puerta_abierta) //Si el jugador llega a la salida y la puerta está abierta
             {
                 corriendo = 0; //Termina el juego
-
-                /*  aqui va lo de carlos
-                'desplegar_pantalla_resumen(...)' */
+                desplegar_pantalla_resumen(estado.nivel_actual, estado.monedas_recogidas, estado.total_monedas, estado.pasos); /* AREA DE CARLOS */
             }
         }
 
@@ -240,5 +238,93 @@ void ejecutar_juego() {
 
     #ifndef _WIN32
         restaurar_terminal();
+    #endif
+}
+
+
+/*
+    AREA DE CARLOS - Persistencia
+    cargar_mapa_desde_archivo()
+    Lee el archivo .txt del nivel y llena estado.mapa
+    También busca la posición inicial del jugador (P)
+*/
+void cargar_mapa_desde_archivo(const char* ruta)
+{
+    FILE* archivo = fopen(ruta, "r");
+
+    if (archivo == NULL)
+    {
+        printf("Error: no se pudo abrir el mapa: %s\n", ruta);
+        exit(1);
+    }
+
+    char linea[128];
+    int fila = 0;
+
+    while (fila < FILAS && fgets(linea, sizeof(linea), archivo))
+    {
+        int len = (int)strlen(linea);
+
+        /* Quitar salto de linea */
+        while (len > 0 && (linea[len-1] == '\n' || linea[len-1] == '\r'))
+            linea[--len] = '\0';
+
+        for (int col = 0; col < COLS; col++)
+            estado.mapa[fila][col] = (col < len) ? linea[col] : '.';
+
+        fila++;
+    }
+
+    /* Rellenar filas faltantes con paredes por si el archivo es corto */
+    for (; fila < FILAS; fila++)
+        for (int col = 0; col < COLS; col++)
+            estado.mapa[fila][col] = '#';
+
+    fclose(archivo);
+
+    /* Buscar posicion inicial del jugador (P) y reemplazarla por camino */
+    estado.jugador_fila = 1;
+    estado.jugador_col  = 1;
+
+    for (int f = 0; f < FILAS; f++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            if (estado.mapa[f][c] == 'P')
+            {
+                estado.jugador_fila = f;
+                estado.jugador_col  = c;
+                estado.mapa[f][c]   = '.'; /* Se dibuja aparte en renderizar */
+                goto jugador_encontrado;
+            }
+        }
+    }
+jugador_encontrado:;
+}
+
+
+/*
+    AREA DE CARLOS - Persistencia
+    desplegar_pantalla_resumen()
+    Muestra el resumen entre niveles antes de continuar
+*/
+void desplegar_pantalla_resumen(int nivel, int monedas, int total_monedas, int pasos)
+{
+    printf("\033[H\033[J");
+    printf(COLOR_YELLOW);
+    printf("  ══════════════════════════════════════════════\n");
+    printf("  |              NIVEL %d COMPLETADO            |\n", nivel);
+    printf("  ══════════════════════════════════════════════\n");
+    printf(COLOR_RESET);
+    printf("\n");
+    printf(COLOR_WHITE "  Monedas recogidas : " COLOR_CYAN "%d/%d\n" COLOR_RESET, monedas, total_monedas);
+    printf(COLOR_WHITE "  Pasos dados       : " COLOR_CYAN "%d\n"    COLOR_RESET, pasos);
+    printf("\n");
+    printf(COLOR_GRAY  "  Presiona cualquier tecla para continuar...\n" COLOR_RESET);
+
+    #ifdef _WIN32
+        _getch();
+    #else
+        getchar();
     #endif
 }
