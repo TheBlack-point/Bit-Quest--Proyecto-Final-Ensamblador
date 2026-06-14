@@ -148,7 +148,7 @@ default rel
 
 global detectar_objeto
 
-section .text
+
 
 detectar_objeto:
     push rbp
@@ -191,8 +191,6 @@ detectar_objeto:
 
 global contar_celdas_libres
 
-section .text
-
 contar_celdas_libres:
     push rbp
     mov rbp, rsp
@@ -215,6 +213,47 @@ contar_celdas_libres:
     jmp .bucle_inicio
 
 .bucle_fin:
+    mov rsp, rbp
+    pop rbp
+    ret
+
+
+;===============================================================
+; calcular_puntaje — Linux System V AMD64
+;
+; RDI = monedas
+; RSI = pasos
+; RDX = niveles
+;
+; Formula: (monedas * 100) - (pasos * 2) + (niveles * 500)
+; Retorno: RAX = puntaje final
+;===============================================================
+
+global calcular_puntaje
+
+calcular_puntaje:
+    push rbp
+    mov rbp, rsp
+
+    ; RAX = monedas * 100
+    mov rax, rdi
+    imul rax, 100
+
+    ; RAX -= pasos * 2
+    mov r9, rsi
+    imul r9, 2
+    sub rax, r9
+
+    ; RAX += niveles * 500
+    mov r10, rdx
+    imul r10, 500
+    add rax, r10
+
+    cmp rax, 0
+    jge .fin_puntaje
+    xor rax, rax
+
+.fin_puntaje:
     mov rsp, rbp
     pop rbp
     ret

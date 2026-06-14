@@ -18,6 +18,7 @@ global contar_caracteres
 global validar_movimiento
 global detectar_objeto
 global contar_celdas_libres
+global calcular_puntaje
 
 section .text
 
@@ -186,6 +187,45 @@ contar_celdas_libres:
     jmp .bucle_libres
 
 .fin_libres:
+    mov rsp, rbp
+    pop rbp
+    ret
+
+
+;===============================================================
+; calcular_puntaje — Windows x64
+;
+; RCX = monedas
+; RDX = pasos
+; R8  = niveles
+;
+; Formula: (monedas * 100) - (pasos * 2) + (niveles * 500)
+; Retorno: RAX = puntaje final
+;===============================================================
+
+calcular_puntaje:
+    push rbp
+    mov rbp, rsp
+
+    ; RAX = monedas * 100
+    mov rax, rcx
+    imul rax, 100
+
+    ; RAX -= pasos * 2
+    mov r9, rdx
+    imul r9, 2
+    sub rax, r9
+
+    ; RAX += niveles * 500
+    mov r10, r8
+    imul r10, 500
+    add rax, r10
+
+    cmp rax, 0
+    jge .fin_puntaje
+    xor rax, rax
+
+.fin_puntaje:
     mov rsp, rbp
     pop rbp
     ret

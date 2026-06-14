@@ -51,16 +51,22 @@ extern EstadoJuego estado;
 
 
 /*NASM MODULO A -Beto*/
+
 extern long long contar_caracteres(char* mapa, int total_celdas, char caracter);
 
 extern int validar_movimiento(char* mapa, int columnas, int nueva_fila,int nueva_col);
 
 
-/* AREA DE AIDA - Traduccion visual*/
+/*NASM MODULO B -ARTUR*/
 
+extern int       detectar_objeto(char* mapa, int columnas, int fila, int col, char objeto);
+extern long long contar_celdas_libres(char* mapa, int total_celdas);
+extern long long calcular_puntaje(int monedas, int pasos, int niveles);
 
 
 /*AREA DE CARLOS - Persistencia*/
+
+
 
 
 /*Funciones -Leo -juego.c */
