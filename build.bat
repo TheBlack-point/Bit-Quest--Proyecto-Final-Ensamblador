@@ -12,9 +12,17 @@ if errorlevel 1 (
 
 echo Compilando archivos de C...
 REM Usamos -Iinclude para que no marque error con las cabeceras
+
 gcc -c -Iinclude src\main.c -o src\main.obj
+if errorlevel 1 ( echo Error en main.c & pause & exit /b 1 )
+
 gcc -c -Iinclude src\juego.c -o src\juego.obj
+if errorlevel 1 ( echo Error en juego.c & pause & exit /b 1 )
+
 gcc -c -Iinclude src\audio.c -o src\audio.obj
+if errorlevel 1 ( echo Error en audio.c & pause & exit /b 1 )
+
+
 if errorlevel 1 (
     echo Error al compilar archivos de C
     pause
