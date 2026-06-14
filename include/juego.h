@@ -1,6 +1,14 @@
 #ifndef JUEGO_H
 #define JUEGO_H
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <locale.h>
+#endif   
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +31,7 @@
 #define COLOR_LLAVE   "\033[95m"   /* magenta      */
 #define COLOR_PUERTA  "\033[91m"   /* rojo         */
 #define COLOR_SALIDA  "\033[92m"   /* verde        */
-
+#define COLOR_FONDO_CAFE "\033[48;5;94m" /* fondo cafe oscuro */
 
 /* Dimensiones del mapa */
 
@@ -66,11 +74,11 @@ extern long long calcular_puntaje(int monedas, int pasos, int niveles);
 /*AREA DE CARLOS - Persistencia*/
 void cargar_mapa_desde_archivo(const char* ruta);
 void desplegar_pantalla_resumen(int nivel, int monedas, int total_monedas, int pasos);
-
+void mostrar_menu_pausa();
 
 
 /*Funciones -Leo -juego.c */
-void ejecutar_juego();
+int ejecutar_juego(); //aqui se utiliza int por el bug de la "Q" retorna 1 si completa nivel, 0 si salio
 void inicializar_estado(int nivel);
 void renderizar_ventana_visible(int jugador_fila, int jugador_col);
 void mover_jugador(char tecla);

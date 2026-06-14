@@ -25,6 +25,8 @@ static const char* rutas_mapas[] = {
 
 #define TOTAL_NIVELES 4
 
+
+
 /*
     AREA DE CARLOS - carga de mapas y pantalla de resumen
     main llama a:
@@ -70,6 +72,39 @@ void mostrar_menu_principal()
     reproducir_audio("menu");
 }
 
+//Al agregar musica para el menu de pausa, nos dimos cuenta de que faltaba
+//Asi que me encargue de crearl -Presi
+
+int salir_al_menu = 0; //Bandera para saber si se salió al menu principal desde el juego, se pasa a 1 si se sale con Q
+void mostrar_menu_pausa()
+{
+    printf("\033[H\033[J");
+    printf(COLOR_YELLOW "  ╔══════════════════════════════════════╗\n" COLOR_RESET);
+    printf(COLOR_YELLOW "  ║             [ PAUSA ]                ║\n" COLOR_RESET);
+    printf(COLOR_YELLOW "  ╚══════════════════════════════════════╝\n" COLOR_RESET);
+    printf("\n");
+    printf(COLOR_WHITE  "    [ R ] Reanudar\n" COLOR_RESET);
+    printf(COLOR_WHITE  "    [ Q ] Salir al menu principal\n" COLOR_RESET);
+    printf("\n");
+    printf(COLOR_GRAY   "  Opcion: " COLOR_RESET);
+
+    char op = leer_tecla();
+
+    if (op == 'Q' || op == 'q')
+    {
+        reproducir_audio("detener");
+        reproducir_audio("menu");
+        salir_al_menu = 1;
+        return;
+    }
+
+    /* Cualquier otra tecla reanuda el juego */
+    reproducir_audio("detener");
+    reproducir_audio("juego");
+}
+
+
+
 /* ─────────────────────────────────────────────
  * PANTALLA FINAL 
  * Llama a calcular_puntaje() — NASM funcion 3
@@ -91,8 +126,8 @@ void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_
     printf(COLOR_WHITE "  Puntaje final       : " COLOR_YELLOW "%lld\n"   COLOR_RESET, puntaje);
     printf("\n");
     printf(COLOR_GRAY "  Presiona cualquier tecla para salir...\n" COLOR_RESET);
-    getchar();
     reproducir_audio("victoria"); //Audio final
+    getchar();
 }
 
 /* ─────────────────────────────────────────────
@@ -100,41 +135,70 @@ void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_
 ───────────────────────────────────────────── */
 int main()
 {
-    char opcion;
-    int nivel_inicio        = 1;
-    int monedas_acumuladas  = 0;
-    int pasos_acumulados    = 0;
-    int niveles_completados = 0;
 
-    mostrar_menu_principal();
-    opcion = getchar();
+    #ifdef _WIN32
+        SetConsoleOutputCP(65001); // Para mostrar caracteres UTF-8 en Windows
+        SetConsoleCP(65001); // Para leer entrada UTF-8 en Windows
+    #else
+        setlocale(LC_ALL, ""); // Para usar la configuración regional del sistema en Linux/Mac
+    #endif
 
-    if (opcion == 'q' || opcion == 'Q') return 0;
 
-    if (opcion >= '1' && opcion <= '4')
-        nivel_inicio = opcion - '0';
-    else
-        nivel_inicio = 1;
-
-    /* Flujo de niveles */
-    for (int nivel = nivel_inicio; nivel <= TOTAL_NIVELES; nivel++)
+    while (1) /*bucle para reiniciar el juego en caso de salir*/
     {
-        /* AREA DE CARLOS: cargar mapa desde archivo */
-        cargar_mapa_desde_archivo(rutas_mapas[nivel - 1]);
 
-        inicializar_estado(nivel);
-        ejecutar_juego();
+    
+        char opcion;
+        int nivel_inicio        = 1;
+        int monedas_acumuladas  = 0;
+        int pasos_acumulados    = 0;
+        int niveles_completados = 0;
 
-        monedas_acumuladas  += estado.monedas_recogidas;
-        pasos_acumulados    += estado.pasos;
-        niveles_completados++;
+        mostrar_menu_principal();
+        opcion = getchar();
 
-        /* AREA DE CARLOS: resumen entre niveles */
-        if (nivel < TOTAL_NIVELES)
-            desplegar_pantalla_resumen(nivel, estado.monedas_recogidas, estado.total_monedas, estado.pasos);
+        if (opcion == 'q' || opcion == 'Q') return 0;
+
+        if (opcion >= '1' && opcion <= '4')
+            nivel_inicio = opcion - '0';
+        else
+            nivel_inicio = 1;
+
+
+        int completo = 1; //Bandera para saber si completo el juego o salio con Q, se pasa a 0 si sale con Q para regresar al menu principal
+        /* Flujo de niveles */
+        for (int nivel = nivel_inicio; nivel <= TOTAL_NIVELES; nivel++)
+        {
+            /* AREA DE CARLOS: cargar mapa desde archivo */
+            cargar_mapa_desde_archivo(rutas_mapas[nivel - 1]);
+
+            inicializar_estado(nivel);
+            int resultado = ejecutar_juego();
+
+            if(resultado == 0)
+            {
+                /*Salio con Q asi que regresa al menu principal*/
+                completo = 0;
+                break;
+            }
+
+            monedas_acumuladas  += estado.monedas_recogidas;
+            pasos_acumulados    += estado.pasos;
+            niveles_completados++;
+
+            /* AREA DE CARLOS: resumen entre niveles */
+            if (nivel < TOTAL_NIVELES)
+            {
+                desplegar_pantalla_resumen(nivel, estado.monedas_recogidas, estado.total_monedas, estado.pasos);
+            }
+
+            if(completo && niveles_completados == TOTAL_NIVELES)
+            {
+                mostrar_pantalla_final(monedas_acumuladas, pasos_acumulados, niveles_completados);
+            }
+        }
     }
 
-    mostrar_pantalla_final(monedas_acumuladas, pasos_acumulados, niveles_completados);
-
+    reproducir_audio("detener"); //detiene cualquier musica que quede sonando al finalizar el juego
     return 0;
 }
