@@ -8,10 +8,6 @@
 #include <stdlib.h>
 #include "juego.h"
 
-ifdef _WIN32
-    #include <windows.h>
-#endif
-
 /*
     AREA DE AIDA - colores y arte visual
     Si deseas cambiar colores, modificar las macros de abajo
@@ -104,9 +100,6 @@ void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_
 ───────────────────────────────────────────── */
 int main()
 {
-    #ifdef _WIN32
-    SetConsoleOutputCP(65001);  /* UTF-8 para que impriman bien los simbolos */
-    #endif
     char opcion;
     int nivel_inicio        = 1;
     int monedas_acumuladas  = 0;
