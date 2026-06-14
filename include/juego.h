@@ -24,14 +24,14 @@
 #define COLOR_GRAY    "\033[90m"
 
 /* COLORES PARA EL MAPA (AÍDA)*/
-#define COLOR_PARED   "\033[90m"   /* gris oscuro  */
-#define COLOR_CAMINO  "\033[37m"   /* blanco suave */
+#define COLOR_PARED   "\033[38;2;80;80;80m"   /* gris oscuro  */
+#define COLOR_CAMINO  "\033[38;5;130m"   /* blanco suave */
 #define COLOR_JUGADOR "\033[96m"   /* cian brillante */
 #define COLOR_MONEDA  "\033[93m"   /* amarillo     */
 #define COLOR_LLAVE   "\033[95m"   /* magenta      */
 #define COLOR_PUERTA  "\033[91m"   /* rojo         */
 #define COLOR_SALIDA  "\033[92m"   /* verde        */
-#define COLOR_FONDO_CAFE "\033[48;5;94m" /* fondo cafe oscuro */
+#define COLOR_FONDO_CAFE "\033[38;5;94m" /* fondo cafe oscuro */
 
 /* Dimensiones del mapa */
 
@@ -82,7 +82,7 @@ int ejecutar_juego(); //aqui se utiliza int por el bug de la "Q" retorna 1 si co
 void inicializar_estado(int nivel);
 void renderizar_ventana_visible(int jugador_fila, int jugador_col);
 void mover_jugador(char tecla);
-
+char leer_tecla(void);
 /*Funciones de audio AÍDA*/
 void reproducir_audio(const char* evento);
 

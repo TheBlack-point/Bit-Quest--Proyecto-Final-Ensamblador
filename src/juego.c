@@ -98,11 +98,11 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
         estado.total_monedas,
         estado.pasos);
 
-    printf(" +--------------------+\n");
+    printf(COLOR_GRAY" ╔═════════════════════╗\n");
 
     for (int f = 0; f < VISTA_FILAS; f++)
     {
-        printf(" |");
+        printf(COLOR_GRAY" ║");
         for (int c = 0; c < VISTA_COLS; c++)
         {
             int fila_real = origen_fila + f;
@@ -113,10 +113,10 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
             : estado.mapa[fila_real][col_real]; //Nuesto bello mapa
             printf("%s", traducir_simbolo(celda));
         }
-        printf(" |\n");
+        printf(COLOR_GRAY" ║\n");
     }
-    printf(" +--------------------+\n");
-    printf(" [W/A/S/D] Mover | [P] Pausa | [Q] Salir\n");
+    printf(COLOR_GRAY" ╚═════════════════════╝\n");
+    printf("[W/A/S/D] Mover | [P] Pausa\n");
 }
 
 
@@ -339,10 +339,10 @@ jugador_encontrado:;
 void desplegar_pantalla_resumen(int nivel, int monedas, int total_monedas, int pasos)
 {
     printf("\033[H\033[J");
-    printf(COLOR_YELLOW);
-    printf("  ══════════════════════════════════════════════\n");
-    printf("  |              NIVEL %d COMPLETADO            |\n", nivel);
-    printf("  ══════════════════════════════════════════════\n");
+    printf(COLOR_FONDO_CAFE);
+    printf("  ╔════════════════════════════════════════════╗\n");
+    printf("  ║              NIVEL %d COMPLETADO            ║\n", nivel);
+    printf("  ╚════════════════════════════════════════════╝\n");
     printf(COLOR_RESET);
     printf("\n");
     printf(COLOR_WHITE "  Monedas recogidas : " COLOR_CYAN "%d/%d\n" COLOR_RESET, monedas, total_monedas);

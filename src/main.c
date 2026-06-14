@@ -42,7 +42,7 @@ void mostrar_menu_principal()
     printf("\033[H\033[J");
 
     /* Arte ASCII - BITQUEST */
-    printf(COLOR_CYAN);
+    printf(COLOR_FONDO_CAFE);
     printf("  ██████╗ ██╗████████╗ ██████╗ ██╗   ██╗███████╗███████╗████████╗\n");
     printf("  ██╔══██╗██║╚══██╔══╝██╔═══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝\n");
     printf("  ██████╔╝██║   ██║   ██║   ██║██║   ██║█████╗  ███████╗   ██║   \n");
@@ -52,12 +52,13 @@ void mostrar_menu_principal()
     printf(COLOR_RESET);
 
     printf("\n");
-    printf(COLOR_YELLOW "       Explorador de Matrices con C + NASM x86-64\n" COLOR_RESET);
-    printf(COLOR_YELLOW "       Materia: Lenguaje Ensamblador  -  Junio 2026\n" COLOR_RESET);
+    printf(COLOR_GRAY "       Explorador de Matrices con C + NASM x86-64\n" COLOR_RESET);
+    printf(COLOR_GRAY "       Materia: Lenguaje Ensamblador  -  Junio 2026\n" COLOR_RESET);
+    printf(COLOR_GRAY "       Disculpen los bugs, hicimos lo que pudimos\n" COLOR_RESET);
     printf("\n");
-    printf(COLOR_WHITE  "  Equipo: Aida . Leo . Beto . Arthur . Carlos\n" COLOR_RESET);
+    printf(COLOR_WHITE  "      Equipo: Aida . Leo . Beto . Arthur . Carlos\n" COLOR_RESET);
     printf("\n");
-    printf(COLOR_GRAY   "  ══════════════════════════════════════════════\n" COLOR_RESET);
+    printf(COLOR_FONDO_CAFE   "  ═════════════════════════════════════════════════════════\n" COLOR_RESET);
     printf("\n");
     printf(COLOR_WHITE  "  Selecciona un nivel:\n\n" COLOR_RESET);
     printf(COLOR_CYAN   "    [ 1 ]" COLOR_WHITE " Nivel 1\n" COLOR_RESET);
@@ -67,7 +68,7 @@ void mostrar_menu_principal()
     printf("\n");
     printf(COLOR_GRAY   "    [ Q ] Salir\n" COLOR_RESET);
     printf("\n");
-    printf(COLOR_GRAY   "  ══════════════════════════════════════════════\n" COLOR_RESET);
+    printf(COLOR_FONDO_CAFE   "  ═════════════════════════════════════════════════════════\n" COLOR_RESET);
     printf(COLOR_WHITE  "  Opcion: " COLOR_RESET);
     reproducir_audio("menu");
 }
@@ -78,13 +79,15 @@ void mostrar_menu_principal()
 int salir_al_menu = 0; //Bandera para saber si se salió al menu principal desde el juego, se pasa a 1 si se sale con Q
 void mostrar_menu_pausa()
 {
+    reproducir_audio("menu");
     printf("\033[H\033[J");
-    printf(COLOR_YELLOW "  ╔══════════════════════════════════════╗\n" COLOR_RESET);
-    printf(COLOR_YELLOW "  ║             [ PAUSA ]                ║\n" COLOR_RESET);
-    printf(COLOR_YELLOW "  ╚══════════════════════════════════════╝\n" COLOR_RESET);
+    printf(COLOR_FONDO_CAFE   "  ╔══════════════════════════════════════╗\n" COLOR_RESET);
+    printf(COLOR_FONDO_CAFE   "  ║             [ PAUSA ]                ║\n" COLOR_RESET);
+    printf(COLOR_FONDO_CAFE   "  ╚══════════════════════════════════════╝\n" COLOR_RESET);
     printf("\n");
-    printf(COLOR_WHITE  "    [ R ] Reanudar\n" COLOR_RESET);
-    printf(COLOR_WHITE  "    [ Q ] Salir al menu principal\n" COLOR_RESET);
+    printf(COLOR_WHITE  "      [ R ] Reanudar\n" COLOR_RESET);
+    printf(COLOR_WHITE  "      [ Q ] Reiniciar\n" COLOR_RESET);
+    printf(COLOR_WHITE  "      [ QQ ] Menu Principal\n" COLOR_RESET);
     printf("\n");
     printf(COLOR_GRAY   "  Opcion: " COLOR_RESET);
 
@@ -93,7 +96,6 @@ void mostrar_menu_pausa()
     if (op == 'Q' || op == 'q')
     {
         reproducir_audio("detener");
-        reproducir_audio("menu");
         salir_al_menu = 1;
         return;
     }
