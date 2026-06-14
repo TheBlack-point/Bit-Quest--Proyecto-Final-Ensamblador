@@ -13,12 +13,7 @@
     Si deseas cambiar colores, modificar las macros de abajo
 */
 
-/* Codigos de color ANSI */
-#define COLOR_RESET   "\033[0m"
-#define COLOR_CYAN    "\033[96m"
-#define COLOR_YELLOW  "\033[93m"
-#define COLOR_WHITE   "\033[97m"
-#define COLOR_GRAY    "\033[90m"
+/* Codigos de color ANSI MOVIDOS AL .H PORQUE SE SUPONE QUE ASÍ LOS TENÍAN QUE PONER BASTARDITOS */
 
 /* Rutas de mapas — Aida los puso en assets/maps/ */
 static const char* rutas_mapas[] = {
@@ -72,6 +67,7 @@ void mostrar_menu_principal()
     printf("\n");
     printf(COLOR_GRAY   "  ══════════════════════════════════════════════\n" COLOR_RESET);
     printf(COLOR_WHITE  "  Opcion: " COLOR_RESET);
+    reproducir_audio("menu");
 }
 
 /* ─────────────────────────────────────────────
@@ -96,6 +92,7 @@ void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_
     printf("\n");
     printf(COLOR_GRAY "  Presiona cualquier tecla para salir...\n" COLOR_RESET);
     getchar();
+    reproducir_audio("victoria"); //Audio final
 }
 
 /* ─────────────────────────────────────────────
