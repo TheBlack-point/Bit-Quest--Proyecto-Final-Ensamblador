@@ -16,7 +16,6 @@
 #define COLOR_GRAY    "\033[90m"
 
 /* COLORES PARA EL MAPA (AÍDA)*/
-#define COLOR_RESET   "\033[0m"   /* Reseteo de color */
 #define COLOR_PARED   "\033[90m"   /* gris oscuro  */
 #define COLOR_CAMINO  "\033[37m"   /* blanco suave */
 #define COLOR_JUGADOR "\033[96m"   /* cian brillante */
@@ -65,7 +64,8 @@ extern long long calcular_puntaje(int monedas, int pasos, int niveles);
 
 
 /*AREA DE CARLOS - Persistencia*/
-
+void cargar_mapa_desde_archivo(const char* ruta);
+void desplegar_pantalla_resumen(int nivel, int monedas, int total_monedas, int pasos);
 
 
 
