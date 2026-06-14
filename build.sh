@@ -1,6 +1,7 @@
 #!/bin/bash
 # Script para compilar el juego BitQuest en Linux usando NASM y GCC.
 # Responsable: Aída la oztia Cons
+# Y el Presi fue el betatester oficial, así que se merece un crédito también.
 
 
 

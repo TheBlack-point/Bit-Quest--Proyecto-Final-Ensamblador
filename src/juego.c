@@ -74,7 +74,7 @@ void calcular_origen_viewport(int jugador_fila, int jugador_col, int *origen_fil
 const char* traducir_simbolo(char c) {
     switch (c){
         case '#': return COLOR_PARED   "█" COLOR_RESET;   
-        case '.': return COLOR_CAMINO  "░" COLOR_RESET;
+        case '.': return COLOR_FONDO_CAFE COLOR_CAMINO  "░" COLOR_RESET;
         case 'P': return COLOR_JUGADOR "X" COLOR_RESET;    
         case 'M': return COLOR_MONEDA  "©" COLOR_RESET;    
         case 'K': return COLOR_LLAVE   "¶" COLOR_RESET;      
@@ -116,7 +116,7 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
         printf(" |\n");
     }
     printf(" +--------------------+\n");
-    printf(" [W/A/S/D] Mover | [Q] Salir\n");
+    printf(" [W/A/S/D] Mover | [P] Pausa | [Q] Salir\n");
 }
 
 
@@ -148,33 +148,32 @@ void mover_jugador(char tecla){
 
     /*NASM funcion 2 de beto*/
 
-    if(!validar_movimiento((char*)estado.mapa, COLS, nueva_fila, nueva_col)) return; //Movimiento no válido según las reglas del juego
+    if(!validar_movimiento((char*)estado.mapa, COLS, nueva_fila, nueva_col)) return;
 
-    estado.jugador_fila = nueva_fila;
-    estado.jugador_col = nueva_col;
-    estado.pasos++;
+        /* Revisar puerta ANTES de mover */
+        char celda = estado.mapa[nueva_fila][nueva_col];
+        if (celda == 'D' && !estado.tiene_llave) return;
 
-    char celda = estado.mapa[nueva_fila][nueva_col];
+        /* Ahora sí actualizar posición */
+        estado.jugador_fila = nueva_fila;
+        estado.jugador_col = nueva_col;
+        estado.pasos++;
 
-    /*Esta parte que sigue son las "Casillas Especiales" -leo*/
-
-    if(celda == 'M') //Si el jugador se mueve a una celda con moneda
-    {
-        estado.monedas_recogidas++;//esto aumenta tus monedas
-        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la moneda del mapa
-    }
-
-    if(celda == 'K') //Si el jugador se mueve a una celda con llave
-    {
-        estado.tiene_llave = 1; //El jugador ahora tiene la llave
-        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la llave del mapa
-    }
-
-    if(celda == 'D' && estado.tiene_llave)//Si el jugador se mueve a una celda con puerta y tiene la llave
-    {
-        estado.puerta_abierta = 1; //El jugador ha abierto la puerta
-        estado.mapa[nueva_fila][nueva_col] = '.'; //Remueve la puerta 
-    }
+        if(celda == 'M')
+        {
+            estado.monedas_recogidas++;
+            estado.mapa[nueva_fila][nueva_col] = '.';
+        }
+        if(celda == 'K')
+        {
+            estado.tiene_llave = 1;
+            estado.mapa[nueva_fila][nueva_col] = '.';
+        }
+        if(celda == 'D' && estado.tiene_llave)
+        {
+            estado.puerta_abierta = 1;
+            estado.mapa[nueva_fila][nueva_col] = '.';
+        }
 
 }
 
@@ -206,11 +205,18 @@ void inicializar_estado(int nivel) {
     Al terminar el nivel llamar
     'desplegar_pantalla_resumen() desde aqui
 */
+extern int salir_al_menu;
 
-void ejecutar_juego() {
+int ejecutar_juego() {
+
     #ifndef _WIN32
         activar_modo_raw();
     #endif
+
+        //Cambia la musica del juego
+        reproducir_audio("detener");
+        reproducir_audio("juego");
+
         int corriendo = 1;
         char tecla;
 
@@ -219,10 +225,27 @@ void ejecutar_juego() {
 
             tecla = leer_tecla(); //Lee la tecla duh
 
+
+            if (tecla == 'P' || tecla == 'p')
+            {
+                reproducir_audio("detener");
+                reproducir_audio("pausa");
+                mostrar_menu_pausa();
+
+                if(salir_al_menu)
+                {
+                    salir_al_menu = 0; //Resetea la bandera para no afectar el siguiente juego
+                    return 0; //Regresa al menu principal
+                }
+
+                
+            }
+            
             if (tecla == 'Q' || tecla == 'q')
             {
-                corriendo = 0; //Salir del juego al precionar Q/q
-                break;
+                reproducir_audio("detener");
+                reproducir_audio("menu");
+                return 0; //Regresa al menu principal salio con Q
             }
 
             mover_jugador(tecla); //Intenta mover al jugador según la tecla precionada
@@ -231,6 +254,8 @@ void ejecutar_juego() {
             {
                 corriendo = 0; //Termina el juego
                 desplegar_pantalla_resumen(estado.nivel_actual, estado.monedas_recogidas, estado.total_monedas, estado.pasos); /* AREA DE CARLOS */
+                reproducir_audio("detener");
+                return 1; //Retorna 1 si se completo el nivel
             }
         }
 
@@ -239,6 +264,9 @@ void ejecutar_juego() {
     #ifndef _WIN32
         restaurar_terminal();
     #endif
+
+
+    reproducir_audio("detener");
 }
 
 
