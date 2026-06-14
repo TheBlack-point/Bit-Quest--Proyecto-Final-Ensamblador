@@ -55,4 +55,5 @@ void reproducir_audio(const char* evento)
 reproducir_audio("menu");      /* Al abrir el menu        
 reproducir_audio("juego");     /* Al iniciar un nivel     
 reproducir_audio("victoria");  /* Al ganar                
-reproducir_audio("detener");   /* Al cambiar de pantalla  (después de cada que salgan)*/
+reproducir_audio("detener");   /* Al cambiar de pantalla  (después de cada que salgan)
+*/
