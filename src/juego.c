@@ -78,7 +78,7 @@ const char* traducir_simbolo(char c) {
         case 'P': return COLOR_JUGADOR "X" COLOR_RESET;    
         case 'M': return COLOR_MONEDA  "©" COLOR_RESET;    
         case 'K': return COLOR_LLAVE   "¶" COLOR_RESET;      
-        case 'D': return COLOR_PUERTA  "Ð" COLOR_RESET;     
+        case 'D': return COLOR_PUERTA  "│" COLOR_RESET;  //se cambió pq la regué juasjuas   
         case 'E': return COLOR_SALIDA  "█" COLOR_RESET;     
         default:  return COLOR_CAMINO  "?" COLOR_RESET;     
     }
