@@ -165,8 +165,9 @@ int main()
         else
             nivel_inicio = 1;
 
-
+        int resultado = 0;
         int completo = 1; //Bandera para saber si completo el juego o salio con Q, se pasa a 0 si sale con Q para regresar al menu principal
+        
         /* Flujo de niveles */
         for (int nivel = nivel_inicio; nivel <= TOTAL_NIVELES; nivel++)
         {
@@ -174,14 +175,15 @@ int main()
             cargar_mapa_desde_archivo(rutas_mapas[nivel - 1]);
 
             inicializar_estado(nivel);
-            int resultado = ejecutar_juego();
-
+            resultado = ejecutar_juego();
+        
             if(resultado == 0)
             {
                 /*Salio con Q asi que regresa al menu principal*/
                 completo = 0;
                 break;
             }
+
 
             monedas_acumuladas  += estado.monedas_recogidas;
             pasos_acumulados    += estado.pasos;
@@ -193,13 +195,17 @@ int main()
                 desplegar_pantalla_resumen(nivel, estado.monedas_recogidas, estado.total_monedas, estado.pasos);
             }
 
+            
+
+            
+        }
+
             if(completo && niveles_completados == TOTAL_NIVELES)
             {
                 mostrar_pantalla_final(monedas_acumuladas, pasos_acumulados, niveles_completados);
             }
-        }
     }
-
+    
     reproducir_audio("detener"); //detiene cualquier musica que quede sonando al finalizar el juego
     return 0;
 }
