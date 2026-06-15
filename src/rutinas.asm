@@ -223,7 +223,7 @@ contar_celdas_libres:
 ; RSI = pasos
 ; RDX = niveles
 ;
-; Formula: (monedas * 100) - (pasos * 2) + (niveles * 500)
+; Formula: (monedas * 175) - (pasos / 2) + (niveles * 1000)
 ; Retorno: RAX = puntaje final
 ;===============================================================
 
@@ -233,18 +233,18 @@ calcular_puntaje:
     push rbp
     mov rbp, rsp
 
-    ; RAX = monedas * 100
+    ; RAX = monedas * 175
     mov rax, rdi
-    imul rax, 100
+    imul rax, 175
 
-    ; RAX -= pasos * 2
+    ; RAX -= pasos / 2
     mov r9, rsi
-    imul r9, 2
+    sar r9, 1
     sub rax, r9
 
-    ; RAX += niveles * 500
+    ; RAX += niveles * 1000
     mov r10, rdx
-    imul r10, 500
+    imul r10, 1000
     add rax, r10
 
     cmp rax, 0
