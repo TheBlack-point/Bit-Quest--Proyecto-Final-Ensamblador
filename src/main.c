@@ -85,9 +85,8 @@ void mostrar_menu_pausa()
     printf(COLOR_FONDO_CAFE   "  ║             [ PAUSA ]                ║\n" COLOR_RESET);
     printf(COLOR_FONDO_CAFE   "  ╚══════════════════════════════════════╝\n" COLOR_RESET);
     printf("\n");
-    printf(COLOR_WHITE  "      [ R ] Reanudar\n" COLOR_RESET);
-    printf(COLOR_WHITE  "      [ Q ] Reiniciar\n" COLOR_RESET);
-    printf(COLOR_WHITE  "      [ QQ ] Menu Principal\n" COLOR_RESET);
+    printf(COLOR_CYAN  "      [ R ]" COLOR_WHITE " Reanudar\n" COLOR_RESET);
+    printf(COLOR_CYAN   "      [ Q ]" COLOR_WHITE " Menú Principal\n" COLOR_RESET);
     printf("\n");
     printf(COLOR_GRAY   "  Opcion: " COLOR_RESET);
 
@@ -129,7 +128,7 @@ void mostrar_pantalla_final(int monedas_totales, int pasos_totales, int niveles_
     printf("\n");
     printf(COLOR_GRAY "  Presiona cualquier tecla para salir...\n" COLOR_RESET);
     reproducir_audio("victoria"); //Audio final
-    getchar();
+    leer_tecla();
 }
 
 /* ─────────────────────────────────────────────
@@ -157,7 +156,7 @@ int main()
         int niveles_completados = 0;
 
         mostrar_menu_principal();
-        opcion = getchar();
+        opcion = leer_tecla();
 
         if (opcion == 'q' || opcion == 'Q') return 0;
 

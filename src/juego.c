@@ -26,6 +26,7 @@ EstadoJuego estado;
 
 #ifndef _WIN32
 static struct termios config_original;
+static int terminal_en_raw = 0;
 
 void activar_modo_raw() 
 {
@@ -34,11 +35,13 @@ void activar_modo_raw()
     raw = config_original;
     raw.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+    terminal_en_raw = 1;
 }
 
 void restaurar_terminal() 
 {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &config_original);
+    terminal_en_raw = 0;
 }
 #endif
 
@@ -48,7 +51,21 @@ char leer_tecla()
 #ifdef _WIN32
     return (char)_getch();
 #else
-    return (char)getchar();
+    if (terminal_en_raw)
+        return (char)getchar();
+
+    struct termios anterior;
+    struct termios raw;
+    char tecla;
+
+    tcgetattr(STDIN_FILENO, &anterior);
+    raw = anterior;
+    raw.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+    tecla = (char)getchar();
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &anterior);
+
+    return tecla;
 #endif
 }
 
@@ -92,7 +109,7 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
     calcular_origen_viewport(jugador_fila, jugador_col, &origen_fila, &origen_col);
 
     printf("\033[H\033[J"); //Este print limpia la pantalla
-    printf(" BitQuest | Nivel: %d | Monedas: %d/%d | Pasos: %d\n", 
+    printf(COLOR_FONDO_CAFE " BitQuest | Nivel: %d | Monedas: %d/%d | Pasos: %d\n" COLOR_RESET, 
         estado.nivel_actual,
         estado.monedas_recogidas,
         estado.total_monedas,
@@ -116,7 +133,7 @@ void renderizar_ventana_visible(int jugador_fila, int jugador_col)
         printf(COLOR_GRAY" ║\n");
     }
     printf(COLOR_GRAY" ╚═════════════════════╝\n");
-    printf("[W/A/S/D] Mover | [P] Pausa\n");
+    printf(COLOR_FONDO_CAFE"[W/A/S/D] Mover | [P] Pausa\n");
 }
 
 
@@ -235,6 +252,9 @@ int ejecutar_juego() {
                 if(salir_al_menu)
                 {
                     salir_al_menu = 0; //Resetea la bandera para no afectar el siguiente juego
+                    #ifndef _WIN32
+                        restaurar_terminal();
+                    #endif
                     return 0; //Regresa al menu principal
                 }
 
@@ -245,6 +265,9 @@ int ejecutar_juego() {
             {
                 reproducir_audio("detener");
                 reproducir_audio("menu");
+                #ifndef _WIN32
+                    restaurar_terminal();
+                #endif
                 return 0; //Regresa al menu principal salio con Q
             }
 
@@ -255,6 +278,9 @@ int ejecutar_juego() {
                 corriendo = 0; //Termina el juego
                 desplegar_pantalla_resumen(estado.nivel_actual, estado.monedas_recogidas, estado.total_monedas, estado.pasos); /* AREA DE CARLOS */
                 reproducir_audio("detener");
+                #ifndef _WIN32
+                    restaurar_terminal();
+                #endif
                 return 1; //Retorna 1 si se completo el nivel
             }
         }
@@ -345,14 +371,10 @@ void desplegar_pantalla_resumen(int nivel, int monedas, int total_monedas, int p
     printf("  ╚════════════════════════════════════════════╝\n");
     printf(COLOR_RESET);
     printf("\n");
-    printf(COLOR_WHITE "  Monedas recogidas : " COLOR_CYAN "%d/%d\n" COLOR_RESET, monedas, total_monedas);
-    printf(COLOR_WHITE "  Pasos dados       : " COLOR_CYAN "%d\n"    COLOR_RESET, pasos);
+    printf(COLOR_WHITE "      Monedas recogidas : " COLOR_CYAN "%d/%d\n" COLOR_RESET, monedas, total_monedas);
+    printf(COLOR_WHITE "      Pasos dados       : " COLOR_CYAN "%d\n"    COLOR_RESET, pasos);
     printf("\n");
-    printf(COLOR_GRAY  "  Presiona cualquier tecla para continuar...\n" COLOR_RESET);
+    printf(COLOR_GRAY  "  Presiona cualquier tecla dos veces para continuar al siguiente nivel...\n" COLOR_RESET);
 
-    #ifdef _WIN32
-        _getch();
-    #else
-        getchar();
-    #endif
+    leer_tecla();
 }
